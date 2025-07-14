@@ -5,7 +5,10 @@ const physioSchema = new Schema(
     bookings: [{ ref: "Bookings", type: Schema.Types.ObjectId }],
     specialization: { type: String, required: true }, // e.g., ICU, Pediatrics
     companyName: { ref: "HealthLocations", type: Schema.Types.ObjectId }, // reference to HealthLocations model
-    c,
+    role: {
+      type: [String],
+      default: ["PhysioTherapist", "healthCareProvider"],
+    },
   },
   { timestamps: true }
 );
