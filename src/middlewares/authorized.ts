@@ -14,10 +14,32 @@ export function authorize(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    const payload = jwt.verify(token, "SecretKey"); // need to add a secret key in .env file, take it from the BE girls
+    const payload = jwt.verify(token, process.env.JWT_SECRET as string); // need to add a secret key in .env file, take it from the BE girls
     (req as any).user = payload;
     next(); // Proceed to the next middleware or route handler
   } catch (err) {
     res.status(401).json({ message: "Invalid or expired token" });
   }
+}
+// this will check for a singular role not an array of roles
+// export function authorizeRole(roles: string[]) {
+//   return (req: Request, res: Response, next: NextFunction) => {
+//     const user = (req as any).user;
+//     if (!user || !roles.includes(user.role)) {
+//       res.status(403).json({ message: "Forbidden: insufficient role" });
+//     }
+//     next();
+//   };
+// }
+
+// this will check for an array of roles
+export function authorizeRole(roles: string[]) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const user = (req as any).user;
+    const userRoles = Array.isArray(user.role) ? user.role : [user.role];
+    if (!user || !roles.some((role) => userRoles.includes(role))) {
+      res.status(403).json({ message: "Forbidden: insufficient role" });
+    }
+    next();
+  };
 }

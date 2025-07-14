@@ -68,7 +68,7 @@ const makeAppointment = async (
 ) => {
   try {
     // get appointment data from request body
-    const { type, date, time, duratoin } = req.body;
+    const { type, date, time, duration } = req.body;
     // type: online, offline, emergency
     // status: upcoming, pending, done, cancelled
     const { doctorID } = req.params; // user is the logged in health care provider
@@ -79,7 +79,7 @@ const makeAppointment = async (
       date,
       status: "Pending", // default status, it will show under pending appointments for the doctor they will accept or reject in FE
       time,
-      duratoin,
+      duration,
       pateint: pateintID,
       doctor: doctorID,
     });

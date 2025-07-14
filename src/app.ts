@@ -4,6 +4,8 @@ import ErrorHandler from "./middlewares/errorHandler";
 import morgan from "morgan";
 import cors from "cors";
 import appointmentsRoutes from "./routes/appointmentsRoutes";
+import bookingsRoutes from "./routes/bookingsRoutes";
+import availabilityRoutes from "./routes/availablityRoutes";
 import path from "path";
 
 const app = express();
@@ -15,6 +17,8 @@ app.use(cors()); // middleware allows cross-origin requests
 
 // Routes
 app.use("/appointments", appointmentsRoutes);
+app.use("/bookings", bookingsRoutes);
+app.use("/availability", availabilityRoutes);
 
 //error handling Middlewares
 app.use(notFound);

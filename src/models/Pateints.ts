@@ -1,4 +1,4 @@
-import { Model, Schema, SchemaType } from "mongoose";
+import { model, Schema, SchemaType } from "mongoose";
 
 const patientSchema = new Schema(
   {
@@ -24,9 +24,13 @@ const patientSchema = new Schema(
       block: { type: Number },
       street: { type: Number },
     },
+    role: {
+      type: [String],
+      default: ["patient", "healthCareProvider"],
+    },
   },
   { timestamps: true }
 );
 
-const Patient = new Model("Patient", patientSchema);
+const Patient = model("Patient", patientSchema);
 export default Patient;

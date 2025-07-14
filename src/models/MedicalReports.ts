@@ -10,3 +10,6 @@ const MedicalReportsSchema = new Schema(
   },
   { timestamps: true }
 );
+
+const MedicalReports = model("MedicalReports", MedicalReportsSchema);
+export default MedicalReports;

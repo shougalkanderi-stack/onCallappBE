@@ -12,6 +12,10 @@ const DoctorSchema = new Schema(
     companyName: { type: String, required: true }, // hospital or clinic name
     isOnCall: { type: Boolean },
     perscription: { ref: "Prescription", type: Schema.Types.ObjectId }, // icebox
+    role: {
+      type: [String],
+      default: ["doctor", "healthCareProvider"],
+    },
   },
   { timestamps: true }
 );

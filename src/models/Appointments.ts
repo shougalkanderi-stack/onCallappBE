@@ -9,7 +9,7 @@ const appointmentSchema = new Schema(
     price: { type: Number, required: true }, //
     date: { type: Date, required: true },
     time: { type: Number, required: true }, // 10:00 AM
-    duratoin: { type: Number, required: true }, // 15min, 30min, 60min
+    duration: { type: Number, required: true }, // 15min, 30min, 60min
     AItranscript: { ref: "Transcript", type: Schema.Types.ObjectId }, // icebox
     notes: { type: [String] },
   },
