@@ -1,11 +1,15 @@
+// src/models/Nurse.ts
+
 import { Schema, model, Types, Document } from "mongoose";
 import autopopulate from "mongoose-autopopulate";
 
 export interface INurse extends Document {
-  bookings: Types.ObjectId[];
-  companyName: string;
   provider: Types.ObjectId;
+  bookings: Types.ObjectId[];
+  specialization: string;
+  companyName: string;
   languages?: string[];
+  role?: string[];
 }
 
 const nurseSchema = new Schema<INurse>(
@@ -14,7 +18,7 @@ const nurseSchema = new Schema<INurse>(
       type: Schema.Types.ObjectId,
       ref: "HealthCareProvider",
       required: true,
-      autopopulate: true, // 👈 auto-populate provider details
+      autopopulate: true,
     },
     bookings: [
       {
@@ -22,6 +26,11 @@ const nurseSchema = new Schema<INurse>(
         ref: "Booking",
       },
     ],
+    specialization: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     companyName: {
       type: String,
       required: true,
@@ -33,6 +42,10 @@ const nurseSchema = new Schema<INurse>(
         trim: true,
       },
     ],
+    role: {
+      type: [String],
+      default: ["nurse", "healthCareProvider"],
+    },
   },
   { timestamps: true }
 );
