@@ -6,6 +6,9 @@ import MedicalReport from "../models/MedicalReports";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
+// example.js
+console.log("Ready for production!");
+
 //
 export const analyzePdf = async (
   req: Request,
