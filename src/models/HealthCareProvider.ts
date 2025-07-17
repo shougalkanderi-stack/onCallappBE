@@ -1,37 +1,74 @@
 // src/models/HealthCareProvider.ts
-import { timeStamp } from "console";
-import e from "express";
-import mongoose, { model, Schema } from "mongoose";
-import { ref } from "process";
 
-const HealthCareProviderSchema = new Schema(
+import { Schema, model, Document, Types } from "mongoose";
+
+export interface IHealthCareProvider extends Document {
+  _id: Types.ObjectId;
+  name: string;
+  age?: number;
+  gender?: "Male" | "Female";
+  email?: string;
+  civilID: string;
+  phoneNum: string;
+  password: string;
+  YOEX: number;
+  image?: string;
+  licenseNum: string;
+  bio?: string;
+  specialization: string;
+  patient?: Types.ObjectId[];
+  appointments?: Types.ObjectId[];
+  block?: string;
+  street?: string;
+  building?: string;
+  area?: string;
+  doctor?: Types.ObjectId;
+  nurse?: Types.ObjectId;
+  labs?: Types.ObjectId;
+  physiotherapist?: Types.ObjectId;
+  avalSchedule?: Types.ObjectId[];
+  prescriptions?: Types.ObjectId[];
+  onCall?: boolean;
+  role: "Doctor" | "Nurse" | "Physiotherapist" | "Lab";
+}
+
+const healthCareProviderSchema = new Schema<IHealthCareProvider>(
   {
     name: { type: String, required: true },
-    civilID: { type: String, required: true, unique: true },
-    phoneNum: { type: String, required: true },
-    passwordHash: { type: String, required: true },
+    age: { type: Number },
+    gender: { type: String, enum: ["Male", "Female"] },
+    email: {
+      type: String,
+      match: [
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+        "Please fill a valid email address",
+      ],
+    },
+    civilID: {
+      type: String,
+      required: true,
+      unique: true,
+      match: [/^\d{12}$/, "CivilID must be exactly 12 digits"],
+    },
+    phoneNum: {
+      type: String,
+      required: true,
+      match: [/^\d{8}$/, "Phone number must be exactly 8 digits"],
+    },
+    password: { type: String, required: true },
     YOEX: { type: Number, required: true },
+    image: { type: String },
     licenseNum: { type: String, required: true },
-    specialization: { type: String, required: true },
-    doctor: { ref: "Doctor", type: Schema.Types.ObjectId }, // reference to Doctor model
-    nurse: { ref: "Nurse", type: Schema.Types.ObjectId },
-    physio: { ref: "Physio", type: Schema.Types.ObjectId }, // reference to Physio model
-    lab: { ref: "Labs", type: Schema.Types.ObjectId }, // reference to Labs model
-    bookings: [{ ref: "Bookings", type: Schema.Types.ObjectId }], // reference to Bookings model
-    companyName: { ref: "HealthCareLocations", type: Schema.Types.ObjectId }, //  reference to HealthLocations model
-    availableSchedule: [
-      { ref: "AvailableSchedule", type: Schema.Types.ObjectId },
-    ],
-    languages: [{ type: String }],
     bio: { type: String },
-    image: { type: String }, // URL to the provider's image
-    createdAt: { type: Date, default: timeStamp },
-  },
-  { timestamps: true }
-);
+    specialization: { type: String, required: true },
 
-const HealthCareProvider = model(
-  "HealthCareProvider",
-  HealthCareProviderSchema
-);
-export default HealthCareProvider;
+    patient: [{ type: Schema.Types.ObjectId, ref: "Patient" }],
+    appointments: [{ type: Schema.Types.ObjectId, ref: "Appointment" }],
+
+    block: { type: String },
+    street: { type: String },
+    building: { type: String },
+    area: { type: String },
+
+    doctor: { type: Schema.Types.ObjectId, ref: "Doctor" },
+    nurse: { type: Schema.Types.ObjectId, ref: "Nurse"

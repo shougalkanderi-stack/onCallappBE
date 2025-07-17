@@ -1,9 +1,8 @@
-import { time } from "console";
 import { model, Schema } from "mongoose";
 
 const bookingSchema = new Schema(
   {
-    pateint: { ref: "Patient", type: Schema.Types.ObjectId, required: true },
+    patient: { ref: "Patient", type: Schema.Types.ObjectId, required: true },
     serviceProvider: {
       ref: "HealthCareProvider",
       type: Schema.Types.ObjectId,
@@ -17,5 +16,6 @@ const bookingSchema = new Schema(
   },
   { timestamps: true }
 );
+
 const Bookings = model("Bookings", bookingSchema);
 export default Bookings;

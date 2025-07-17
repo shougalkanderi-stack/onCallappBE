@@ -4,41 +4,42 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.ts"
+    "start": "nodemon src/app.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shougalkanderi-stack/onCallappBE.git"
+    "url": "git+https://github.com/shahad-cell/onCallappBE.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/shougalkanderi-stack/onCallappBE/issues"
+    "url": "https://github.com/shahad-cell/onCallappBE/issues"
   },
-  "homepage": "https://github.com/shougalkanderi-stack/onCallappBE#readme",
+  "homepage": "https://github.com/shahad-cell/onCallappBE#readme",
   "description": "",
   "dependencies": {
+    "agora-access-token": "^2.0.4",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "jose": "^6.0.11",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.2",
+    "mongoose": "^8.16.3",
+    "mongoose-autopopulate": "^1.1.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "openai": "^5.9.0",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "zod": "^4.0.5"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/morgan": "^1.9.10",
-    "@types/multer": "^2.0.0",
-    "@types/node": "^24.0.10",
-    "@types/pdf-parse": "^1.1.5",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3"
-  }
-}
+    "@types/mongoose": "^

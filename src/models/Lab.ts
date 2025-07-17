@@ -1,24 +1,22 @@
-// src/models/Nurse.ts
-
 import { Schema, model, Types, Document } from "mongoose";
 import autopopulate from "mongoose-autopopulate";
 
-export interface INurse extends Document {
-  provider: Types.ObjectId;
+export interface ILab extends Document {
   bookings: Types.ObjectId[];
   specialization: string;
   companyName: string;
-  languages?: string[];
-  role?: string[];
+  typesOfTests?: string[];
+  medicalReports: Types.ObjectId[];
+  provider: Types.ObjectId;
 }
 
-const nurseSchema = new Schema<INurse>(
+const labSchema = new Schema<ILab>(
   {
     provider: {
       type: Schema.Types.ObjectId,
       ref: "HealthCareProvider",
       required: true,
-      autopopulate: true,
+      autopopulate: true,  // 👈 Auto-populate the provider when querying
     },
     bookings: [
       {
@@ -36,20 +34,22 @@ const nurseSchema = new Schema<INurse>(
       required: true,
       trim: true,
     },
-    languages: [
+    typesOfTests: [
       {
         type: String,
         trim: true,
       },
     ],
-    role: {
-      type: [String],
-      default: ["nurse", "healthCareProvider"],
-    },
+    medicalReports: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "MedicalReport",
+      },
+    ],
   },
   { timestamps: true }
 );
 
-nurseSchema.plugin(autopopulate);
+labSchema.plugin(autopopulate);
 
-export default model<INurse>("Nurse", nurseSchema);
+export default model<ILab>("Lab", labSchema);
