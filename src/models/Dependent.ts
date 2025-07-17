@@ -13,9 +13,11 @@ export interface IDependent extends Document {
   height?: number;
   History?: string[];
   initialCheckUp?: string[];
-  careGiver?: Types.ObjectId;                // ref to Patient
-  appointments?: Types.ObjectId[];          // ref to Appointments
-  perscription?: Types.ObjectId[];          // ref to Prescription
+  careGiver: Types.ObjectId; // ref to Patient
+  appointments?: Types.ObjectId[]; // ref to Appointment
+  perscription?: Types.ObjectId[]; // ref to Prescription
+  hasActivePrescription?: boolean;
+  hasActiveAppointment?: boolean;
 }
 
 const dependentSchema = new Schema<IDependent>(
@@ -32,9 +34,11 @@ const dependentSchema = new Schema<IDependent>(
     height: { type: Number },
     History: [{ type: String }],
     initialCheckUp: [{ type: String }],
-    careGiver: { type: Schema.Types.ObjectId, ref: "Patient" },
+    careGiver: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
     appointments: [{ type: Schema.Types.ObjectId, ref: "Appointment" }],
-    perscription: [{ type: Schema.Types.ObjectId, ref: "Prescription" }]
+    perscription: [{ type: Schema.Types.ObjectId, ref: "Prescription" }],
+    hasActivePrescription: { type: Boolean, default: false },
+    hasActiveAppointment: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

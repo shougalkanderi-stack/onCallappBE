@@ -11,8 +11,8 @@ export interface Patients extends Document {
   dependents: Types.ObjectId[];
   profileImage?: string;
   documentPath?: string;
+  medicalHistoryPath?: string;
   favorites?: Types.ObjectId[];
-  medicalHistoryPath?: string; 
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,10 +28,10 @@ const PatientsSchema = new mongoose.Schema(
     dependents: [{ type: mongoose.Schema.Types.ObjectId, ref: "Dependent" }],
     profileImage: { type: String },
     documentPath: { type: String },
+    medicalHistoryPath: { type: String },
     favorites: [
       { type: mongoose.Schema.Types.ObjectId, ref: "HealthCareProvider" },
     ],
-    medicalHistoryPath: { type: String },
   },
   { timestamps: true }
 );

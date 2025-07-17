@@ -1,6 +1,6 @@
 // src/models/HealthCareProvider.ts
 
-import { Schema, model, Document, Types } from "mongoose";
+import mongoose, { Schema, model, Document, Types } from "mongoose";
 
 export interface IHealthCareProvider extends Document {
   _id: Types.ObjectId;
@@ -10,12 +10,14 @@ export interface IHealthCareProvider extends Document {
   email?: string;
   civilID: string;
   phoneNum: string;
-  password: string;
+  password: string; // unified name (not passwordHash)
   YOEX: number;
   image?: string;
   licenseNum: string;
   bio?: string;
   specialization: string;
+  averageRating?: number;
+  reviewCount?: number;
   patient?: Types.ObjectId[];
   appointments?: Types.ObjectId[];
   block?: string;
@@ -32,7 +34,7 @@ export interface IHealthCareProvider extends Document {
   role: "Doctor" | "Nurse" | "Physiotherapist" | "Lab";
 }
 
-const healthCareProviderSchema = new Schema<IHealthCareProvider>(
+const HealthCareProviderSchema = new Schema<IHealthCareProvider>(
   {
     name: { type: String, required: true },
     age: { type: Number },
@@ -55,15 +57,19 @@ const healthCareProviderSchema = new Schema<IHealthCareProvider>(
       required: true,
       match: [/^\d{8}$/, "Phone number must be exactly 8 digits"],
     },
-    password: { type: String, required: true },
+    password: { type: String, required: true }, // unified with main
     YOEX: { type: Number, required: true },
     image: { type: String },
     licenseNum: { type: String, required: true },
     bio: { type: String },
     specialization: { type: String, required: true },
 
+    averageRating: { type: Number, default: 0 },
+    reviewCount: { type: Number, default: 0 },
+
     patient: [{ type: Schema.Types.ObjectId, ref: "Patient" }],
     appointments: [{ type: Schema.Types.ObjectId, ref: "Appointment" }],
+    prescriptions: [{ type: Schema.Types.ObjectId, ref: "Prescription" }],
 
     block: { type: String },
     street: { type: String },
@@ -71,4 +77,20 @@ const healthCareProviderSchema = new Schema<IHealthCareProvider>(
     area: { type: String },
 
     doctor: { type: Schema.Types.ObjectId, ref: "Doctor" },
-    nurse: { type: Schema.Types.ObjectId, ref: "Nurse"
+    nurse: { type: Schema.Types.ObjectId, ref: "Nurse" },
+    labs: { type: Schema.Types.ObjectId, ref: "Lab" },
+    physiotherapist: { type: Schema.Types.ObjectId, ref: "Physiotherapist" },
+
+    avalSchedule: [{ type: Schema.Types.ObjectId, ref: "AvailableSchedule" }],
+    onCall: { type: Boolean, default: false },
+
+    role: {
+      type: String,
+      enum: ["Doctor", "Nurse", "Physiotherapist", "Lab"],
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+export default model<IHealthCareProvider>("HealthCareProvider", HealthCareProviderSchema);
