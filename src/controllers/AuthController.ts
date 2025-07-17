@@ -6,7 +6,7 @@ import {
   isValidCivilID,
   validateRequiredFields,
 } from "../utils/Validation"; // Utility functions from ../utils/Validation help with checking format and missing fields.
-import Patient from "../models/Patients"; // Patient → the Mongoose model that represents users (patients) in MongoDB.
+import Patients from "../models/Patients"; // Patient → the Mongoose model that represents users (patients) in MongoDB.
 
 // Interface for registration request body
 interface RegisterRequest {
@@ -68,7 +68,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     // 5. Check if user with this Civil ID already exists
-    const existingPatient = await Patient.findOne({ civilID });
+    const existingPatient = await Patients.findOne({ civilID });
     if (existingPatient) {
       res.status(409).json({
         success: false,
@@ -78,7 +78,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     // 6. Check if user with this email already exists
-    const existingEmail = await Patient.findOne({
+    const existingEmail = await Patients.findOne({
       email: email.toLowerCase(),
     });
     if (existingEmail) {
@@ -94,7 +94,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // 8. Create new user
-    const newUser = new Patient({
+    const newUser = new Patients({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       phone: phone.trim(),
@@ -175,7 +175,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // 2. Check if user exists by civilID
-    const user = await Patient.findOne({ civilID });
+    const user = await Patients.findOne({ civilID });
     if (!user) {
       res.status(404).json({
         success: false,
@@ -205,10 +205,17 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       updatedAt: user.updatedAt,
     };
 
-    // 5. Respond with success
+    // 👉 5. Generate JWT token
+    const jwt = require("jsonwebtoken");
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    // 6. Respond with success
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token,
       user: userResponse,
     });
   } catch (error) {

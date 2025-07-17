@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
 import Dependent from "../models/Dependent";
 import Patient from "../models/Patients";
+
 const addDependent = async (req: Request, res: Response) => {
   try {
     const { name, age, relationship } = req.body;
     const patientId = req.body.patientId;
 
-    if (!name || !age || !relationship) {
+    if (!name || !age || !relationship || !patientId) {
       res.status(422).json({
-        message: "Dependent name, age, and relationship are required",
+        message:
+          "Dependent name, age, relationship, and patientId are required",
       });
-      return;
     }
 
     const dependent = new Dependent({
@@ -19,6 +20,7 @@ const addDependent = async (req: Request, res: Response) => {
       relationship,
       patient: patientId,
     });
+
     await dependent.save();
 
     await Patient.findByIdAndUpdate(patientId, {
@@ -26,28 +28,15 @@ const addDependent = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({ dependent });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === "ValidationError") {
+      res.status(400).json({ message: error.message });
+    }
     console.error("❌ Error adding dependent:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// const dependent = new Dependent({
-//   name,
-//   age,
-//   relationship,
-//   patient: patientId,
-// });
-// await dependent.save();
-
-// await Patient.findByIdAndUpdate(patientId, {
-//   $push: { dependents: dependent._id },
-// });
-
-// res.status(201).json({ dependent });
-// };
-
-// Get All Dependents
 const getDependents = async (req: Request, res: Response) => {
   const patientId = req.body.patientId;
 
@@ -55,7 +44,6 @@ const getDependents = async (req: Request, res: Response) => {
   res.status(200).json({ dependents });
 };
 
-// Update Dependent
 const updateDependent = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, age, relationship } = req.body;
@@ -71,7 +59,6 @@ const updateDependent = async (req: Request, res: Response) => {
   res.status(200).json({ dependent: updated });
 };
 
-// Delete Dependent
 const deleteDependent = async (req: Request, res: Response) => {
   const { id } = req.params;
 

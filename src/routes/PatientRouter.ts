@@ -15,19 +15,22 @@ import {
   uploadProfileImage,
   uploadPDFDoc,
 } from "../controllers/PatientController";
+import { authorize } from "../middleWares/AuthMiddleWare";
+// import { authMiddleware } from "../middleWares/AuthMiddleWare";
+// import { authMiddleware } from "../middleWares/AuthMiddleWare"; // ✅ Import auth
 
 const router = express.Router();
 
 // 👤 Patient
-router.get("/me", getPatientProfile);
-router.put("/me", updatePatientProfile);
+router.get("/me", authorize, getPatientProfile);
+router.put("/me", authorize, updatePatientProfile);
 router.delete("/:id", deletePatient);
 
 // 👨‍👩‍👧 Dependents
-router.post("/dependents", addDependent);
-router.get("/dependents", getDependents);
-router.put("/dependents/:id", updateDependent);
-router.delete("/dependents/:id", deleteDependent);
+router.post("/dependents", authorize, addDependent);
+router.get("/dependents", authorize, getDependents);
+router.put("/dependents/:id", authorize, updateDependent);
+router.delete("/dependents/:id", authorize, deleteDependent);
 
 router.post(
   "/:id/upload-profile",

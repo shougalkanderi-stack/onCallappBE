@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
 import Patient from "../models/Patients";
 const getPatientProfile = async (req: Request, res: Response) => {
-  const patientId = req.body.patientId; // Simulated auth
-  const patient = await Patient.findById(patientId).populate("dependents");
+  const patientId = (req as any).user.id; // or ._id, depending on your JWT payload
 
-  if (!patient) {
-    res.status(404).json({ message: "Patient not found" });
-  } else {
-    res.status(200).json({ patient });
+  try {
+    const patient = await Patient.findById(patientId).populate("dependents");
+    if (!patient) {
+      res.status(404).json({ message: "Patient not found" });
+    } else res.status(200).json({ patient });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
