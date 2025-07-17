@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Prescription from "../models/Prescription";
-import Patient from "../models/user";
+import Patient from "../models/Patients";
 import Dependent from "../models/Dependent";
 
 /**

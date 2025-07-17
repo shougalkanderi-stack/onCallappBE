@@ -1,7 +1,20 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Document } from "mongoose";
 import autopopulate from "mongoose-autopopulate";
 
-const appointmentSchema = new Schema(
+export interface IAppointment extends Document {
+  patient: string;
+  doctor: string;
+  type: string;
+  status?: string;
+  price?: number;
+  date: Date;
+  time: number;
+  duration: number;
+  AItranscript?: string;
+  notes?: string[];
+}
+
+const appointmentSchema = new Schema<IAppointment>(
   {
     patient: {
       ref: "Patient",
@@ -11,20 +24,23 @@ const appointmentSchema = new Schema(
     doctor: {
       ref: "Doctor",
       type: Schema.Types.ObjectId,
-      // autopopulate: { select: "speciality" }, // autopopulate health care provider details
+      // autopopulate: { select: "speciality" },
     },
-    type: { type: String, required: true }, // online, offline, emergency,
-    status: { type: String }, // upcoming, pending, done, cancelled
-    price: { type: Number }, //
+    type: { type: String, required: true },
+    status: { type: String },
+    price: { type: Number },
     date: { type: Date, required: true },
-    time: { type: Number, required: true }, // 10:00 AM
-    duration: { type: Number, required: true }, // 15min, 30min, 60min
-    AItranscript: { ref: "Transcript", type: Schema.Types.ObjectId }, // icebox
+    time: { type: Number, required: true },
+    duration: { type: Number, required: true },
+    AItranscript: { ref: "Transcript", type: Schema.Types.ObjectId },
     notes: { type: [String] },
   },
   { timestamps: true }
 );
 
 appointmentSchema.plugin(autopopulate);
-const Appointment = model("Appointment", appointmentSchema);
+
+const Appointment = model<IAppointment>("Appointment", appointmentSchema);
+
 export default Appointment;
+export { IAppointment };

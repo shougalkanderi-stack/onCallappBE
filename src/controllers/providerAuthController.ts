@@ -520,7 +520,7 @@ const handleYOEX = (YOEX: string | number): number => {
   return yoexNumber;
 };
 
-// 🚀 Response Builder: merge populated provider & role
+// 🚀 Merge Response
 const buildMergedUser = (
   token: string,
   role: string,
@@ -529,21 +529,19 @@ const buildMergedUser = (
   const provider = populatedRoleDoc?.provider?.toObject?.() || populatedRoleDoc?.provider || {};
   const roleData = populatedRoleDoc?.toObject?.() || populatedRoleDoc || {};
 
-  // merge & cleanup
   const user = {
     ...provider,
     ...roleData,
     role,
-    doctorId: role === 'Doctor' ? roleData._id?.toString() : undefined,
-    nurseId: role === 'Nurse' ? roleData._id?.toString() : undefined,
-    labId: role === 'Lab' ? roleData._id?.toString() : undefined,
-    physiotherapistId: role === 'Physiotherapist' ? roleData._id?.toString() : undefined,
+    token,
   };
-  delete user.provider; // remove nested
-  return { token, user };
+
+  delete user.provider;
+
+  return user;
 };
 
-// ♿ Generic Register helper
+// ♿ Generic Register Helper
 const registerHelper = async (
   req: Request,
   res: Response,
@@ -563,10 +561,23 @@ const registerHelper = async (
       role,
     }).save();
 
-    const roleDoc = await Model.create({
-      provider: savedProvider._id,
+    const fullRoleData = {
       ...roleFields,
-    });
+      provider: savedProvider._id,
+      name: savedProvider.name,
+      email: savedProvider.email,
+      civilID: savedProvider.civilID,
+      phoneNum: savedProvider.phoneNum,
+      YOEX: savedProvider.YOEX,
+      licenseNum: savedProvider.licenseNum,
+      specialization: savedProvider.specialization,
+      image: savedProvider.image,
+      bio: savedProvider.bio,
+      gender: savedProvider.gender,
+      age: savedProvider.age,
+    };
+
+    const roleDoc = await Model.create(fullRoleData);
 
     const populatedRoleDoc = await Model.findById(roleDoc._id).populate('provider');
     const token = await generateToken({ providerId: savedProvider._id.toString(), role });
@@ -581,7 +592,7 @@ const registerHelper = async (
   }
 };
 
-// 📋 Individual Registration Routes
+// 🔷 Individual Register Routes
 export const registerProviderDoctor = (req: Request, res: Response) =>
   registerHelper(req, res, 'Doctor', Doctor, {
     hospitalOrClinicName: req.body.hospitalOrClinicName || '',
@@ -648,7 +659,7 @@ export const loginProvider = async (req: Request, res: Response) => {
   }
 };
 
-// 📋 Get by ID
+// 📋 Get By ID
 export const getProviderById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -683,7 +694,7 @@ export const getProviderById = async (req: Request, res: Response) => {
   }
 };
 
-// 📋 Get all
+// 📋 Get All
 export const getAllProviders = async (_req: Request, res: Response) => {
   try {
     const providers = await HealthCareProvider.find();
